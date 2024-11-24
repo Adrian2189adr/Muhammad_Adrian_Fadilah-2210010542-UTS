@@ -19,8 +19,15 @@ public class PersonalFinanceApp extends javax.swing.JFrame {
     /**
      * Creates new form PersonalFinanceApp
      */
+    
+    private TransactionManager transactionManager;
+    private DefaultListModel<String> listModel;
+    
     public PersonalFinanceApp() {
         initComponents();
+        transactionManager = new TransactionManager();
+        listModel = new DefaultListModel<>();
+        transactionList.setModel(listModel);
     }
 
     /**
@@ -79,6 +86,11 @@ public class PersonalFinanceApp extends javax.swing.JFrame {
         jLabel3.setText("Amount:");
 
         addButton.setText("Add");
+        addButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addButtonActionPerformed(evt);
+            }
+        });
 
         updateButton.setText("Update");
 
@@ -158,6 +170,21 @@ public class PersonalFinanceApp extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+        try {
+            String date = dateField.getText();
+            String description = descriptionField.getText();
+            double amount = Double.parseDouble(amountField.getText());
+
+            Transaction transaction = new Transaction(date, description, amount);
+            transactionManager.addTransaction(transaction);
+            listModel.addElement(transaction.toString());
+            clearFields();
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Invalid input for amount.");
+        }
+    }//GEN-LAST:event_addButtonActionPerformed
 
     /**
      * @param args the command line arguments
