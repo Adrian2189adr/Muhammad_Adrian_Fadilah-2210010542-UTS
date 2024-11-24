@@ -93,6 +93,11 @@ public class PersonalFinanceApp extends javax.swing.JFrame {
         });
 
         updateButton.setText("Update");
+        updateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateButtonActionPerformed(evt);
+            }
+        });
 
         deleteButton.setText("Delete");
 
@@ -185,6 +190,26 @@ public class PersonalFinanceApp extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Invalid input for amount.");
         }
     }//GEN-LAST:event_addButtonActionPerformed
+
+    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
+        int selectedIndex = transactionList.getSelectedIndex();
+        if (selectedIndex >= 0) {
+            try {
+                String date = dateField.getText();
+                String description = descriptionField.getText();
+                double amount = Double.parseDouble(amountField.getText());
+
+                Transaction transaction = new Transaction(date, description, amount);
+                transactionManager.updateTransaction(selectedIndex, transaction);
+                listModel.set(selectedIndex, transaction.toString());
+                clearFields();
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Invalid input for amount.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No transaction selected.");
+        }
+    }//GEN-LAST:event_updateButtonActionPerformed
 
     /**
      * @param args the command line arguments
