@@ -100,6 +100,11 @@ public class PersonalFinanceApp extends javax.swing.JFrame {
         });
 
         deleteButton.setText("Delete");
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteButtonActionPerformed(evt);
+            }
+        });
 
         exportButton.setText("Export");
 
@@ -210,6 +215,16 @@ public class PersonalFinanceApp extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "No transaction selected.");
         }
     }//GEN-LAST:event_updateButtonActionPerformed
+
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+        int selectedIndex = transactionList.getSelectedIndex();
+        if (selectedIndex >= 0) {
+            transactionManager.deleteTransaction(selectedIndex);
+            listModel.remove(selectedIndex);
+        } else {
+            JOptionPane.showMessageDialog(this, "No transaction selected.");
+        }
+    }//GEN-LAST:event_deleteButtonActionPerformed
 
     /**
      * @param args the command line arguments
