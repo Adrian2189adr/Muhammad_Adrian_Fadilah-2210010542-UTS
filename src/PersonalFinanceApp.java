@@ -7,6 +7,13 @@
  *
  * @author User
  */
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.util.ArrayList;
+
 public class PersonalFinanceApp extends javax.swing.JFrame {
 
     /**
