@@ -243,6 +243,44 @@ public class PersonalFinanceApp extends javax.swing.JFrame {
     }
     }//GEN-LAST:event_exportButtonActionPerformed
 
+    private void clearFields() {
+        dateField.setText("");
+        descriptionField.setText("");
+        amountField.setText("");
+    }
+    
+    private void exportToPDF(String filePath) {
+    try {
+        com.itextpdf.text.Document document = new com.itextpdf.text.Document();
+        com.itextpdf.text.pdf.PdfWriter.getInstance(document, new FileOutputStream(filePath));
+        document.open();
+
+        // Tambahkan judul
+        document.add(new com.itextpdf.text.Paragraph("Transaction List"));
+        document.add(new com.itextpdf.text.Paragraph(" ")); // Tambahkan spasi
+
+        // Tambahkan tabel untuk data transaksi
+        com.itextpdf.text.pdf.PdfPTable table = new com.itextpdf.text.pdf.PdfPTable(3);
+        table.addCell("Date");
+        table.addCell("Description");
+        table.addCell("Amount");
+
+        // Loop melalui daftar transaksi
+        for (Transaction transaction : transactionManager.getTransactions()) {
+            table.addCell(transaction.getDate());
+            table.addCell(transaction.getDescription());
+            table.addCell(String.valueOf(transaction.getAmount()));
+        }
+
+        document.add(table);
+        document.close();
+
+        JOptionPane.showMessageDialog(this, "Transactions exported to PDF successfully!");
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error exporting to PDF: " + e.getMessage());
+    }
+}
+    
     /**
      * @param args the command line arguments
      */
