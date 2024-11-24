@@ -107,6 +107,11 @@ public class PersonalFinanceApp extends javax.swing.JFrame {
         });
 
         exportButton.setText("Export");
+        exportButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -225,6 +230,18 @@ public class PersonalFinanceApp extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "No transaction selected.");
         }
     }//GEN-LAST:event_deleteButtonActionPerformed
+
+    private void exportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportButtonActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setDialogTitle("Save as PDF");
+    fileChooser.setSelectedFile(new File("transactions.pdf")); // Default file name
+
+    int userSelection = fileChooser.showSaveDialog(this);
+    if (userSelection == JFileChooser.APPROVE_OPTION) {
+        File fileToSave = fileChooser.getSelectedFile();
+        exportToPDF(fileToSave.getAbsolutePath());
+    }
+    }//GEN-LAST:event_exportButtonActionPerformed
 
     /**
      * @param args the command line arguments
