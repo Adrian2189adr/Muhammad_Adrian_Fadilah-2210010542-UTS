@@ -13,6 +13,10 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
+import java.io.File;
+import java.io.IOException;
 
 public class PersonalFinanceApp extends javax.swing.JFrame {
 
@@ -53,6 +57,7 @@ public class PersonalFinanceApp extends javax.swing.JFrame {
         updateButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
         exportButton = new javax.swing.JButton();
+        importButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -66,8 +71,8 @@ public class PersonalFinanceApp extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 484, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 399, Short.MAX_VALUE)
+                .addGap(28, 28, 28))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -113,6 +118,13 @@ public class PersonalFinanceApp extends javax.swing.JFrame {
             }
         });
 
+        importButton.setText("Import");
+        importButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -121,22 +133,25 @@ public class PersonalFinanceApp extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(dateField)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(descriptionField, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(amountField, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(descriptionField, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(amountField, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
                             .addComponent(jLabel2)
-                            .addComponent(jLabel3)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(addButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(updateButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(deleteButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(exportButton)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel3))
+                        .addGap(78, 78, 78))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(addButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(updateButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(deleteButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(importButton)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(exportButton)
+                .addContainerGap(9, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -158,7 +173,8 @@ public class PersonalFinanceApp extends javax.swing.JFrame {
                     .addComponent(addButton)
                     .addComponent(exportButton)
                     .addComponent(updateButton)
-                    .addComponent(deleteButton))
+                    .addComponent(deleteButton)
+                    .addComponent(importButton))
                 .addContainerGap(22, Short.MAX_VALUE))
         );
 
@@ -168,8 +184,8 @@ public class PersonalFinanceApp extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -243,6 +259,32 @@ public class PersonalFinanceApp extends javax.swing.JFrame {
     }
     }//GEN-LAST:event_exportButtonActionPerformed
 
+    private void importButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importButtonActionPerformed
+    JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setDialogTitle("Select PDF File");
+    fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("PDF Files", "pdf"));
+
+    int userSelection = fileChooser.showOpenDialog(this);
+    if (userSelection == JFileChooser.APPROVE_OPTION) {
+        File fileToOpen = fileChooser.getSelectedFile();
+
+        // Debug: Log file path untuk memastikan file yang dipilih
+        System.out.println("Path file: " + fileToOpen.getAbsolutePath());
+
+        try {
+            // Membaca file PDF dengan Apache PDFBox
+            String pdfContent = PDFImporter.readPdfWithPDFBox(fileToOpen);
+
+            // Menampilkan isi PDF ke JTextArea
+            JTextArea textArea = new JTextArea(20, 40);
+            textArea.setText(pdfContent);
+            JOptionPane.showMessageDialog(this, new JScrollPane(textArea), "PDF Content", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error reading PDF: " + e.getMessage());
+        }
+    }
+    }//GEN-LAST:event_importButtonActionPerformed
+
     private void clearFields() {
         dateField.setText("");
         descriptionField.setText("");
@@ -278,6 +320,30 @@ public class PersonalFinanceApp extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "Transactions exported to PDF successfully!");
     } catch (Exception e) {
         JOptionPane.showMessageDialog(this, "Error exporting to PDF: " + e.getMessage());
+    }
+}
+    
+    public class PDFImporter {
+
+    public static String readPdfWithPDFBox(File file) throws IOException {
+        if (!file.exists() || !file.getName().endsWith(".pdf")) {
+        throw new IOException("File tidak ditemukan atau bukan PDF.");
+    }
+
+    String content;
+
+    // Membuka dokumen PDF
+    try (PDDocument document = PDDocument.load(file)) {
+        // Mengecek apakah dokumen terenkripsi
+        if (!document.isEncrypted()) {
+            // Ekstraksi teks
+            PDFTextStripper stripper = new PDFTextStripper();
+            content = stripper.getText(document);
+        } else {
+            throw new IOException("Cannot read encrypted PDF.");
+        }
+    }
+        return content;
     }
 }
     
@@ -323,6 +389,7 @@ public class PersonalFinanceApp extends javax.swing.JFrame {
     private javax.swing.JButton deleteButton;
     private javax.swing.JTextField descriptionField;
     private javax.swing.JButton exportButton;
+    private javax.swing.JButton importButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
